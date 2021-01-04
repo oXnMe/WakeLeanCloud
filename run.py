@@ -26,4 +26,5 @@ def wxpush(content):
     sckey = os.getenv('CONFIG_SCKEY')
     url = 'https://sc.ftqq.com/' + sckey + '.send'
     data = {'text':'LeanCloud 唤醒失败！','desp':content}
-    requests.post(url,data)
+    result = requests.post(url,data)
+    print(result)
