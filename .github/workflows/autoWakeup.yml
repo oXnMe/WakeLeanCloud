@@ -1,19 +1,19 @@
 #自动激活Lean Cloud
 name: AutoWakeUpLeanCLoud
 
-on: 
+on:
   release:
     types: [published]
   push:
     tags:
     - 'v*'
-  #  branches: 
+  #  branches:
   #    - master
   schedule:
     - cron: "*/18 0-15 * * *"
   watch:
     types: [started]
-   
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -29,18 +29,8 @@ jobs:
       run: |
         pip install requests
     - name: Waking  #读取站点信息
-      env: 
+      env:
         $CONFIG_SITE: ${{ secrets.Site }} # 读取评论后台地址
-      run: | 
-        python run.py ${{ secrets.Site }}
-        echo `date +"%Y-%m-%d %H:%M:%S"` begin > time.log
-    - name: Commit #更新日志到GitHub仓库
+        $CONFIG_SCKEY: ${{ secrets.SCKEY }} # 读取Server酱SCKEY
       run: |
-        git config --global user.email AutoWakeUp@email.com
-        git config --global user.name AutoWakeUp
-        git add .
-        git commit -m "Successfully Wake" -a
-    - name: Push changes
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        python run.py ${{ secrets.Site }}

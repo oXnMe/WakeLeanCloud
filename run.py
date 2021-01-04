@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+
+import os
 import requests
 import sys
 import time
@@ -5,8 +8,22 @@ import time
 if (len(sys.argv) >= 2):
     urls = sys.argv[1].split(',')
 else:
-    urls = ['https://www.antmoe.com/']
+    wxpush('未传入参数')
+    sys.exit(1)
+s = 0
+u = []
 for i in range(0, len(urls)):
     req = requests.get(urls[i])
-    print(f'第{i}号网址唤醒状态:', req, time.strftime(
-        '%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
+    print('[%s] %s唤醒状态: %s' % (time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())), urls[i], req.status_code))
+    if req.status_code != 200:
+        s += 1
+        u.append(urls[i])
+if s > 0:
+    wxpush('%s唤醒失败' % u)
+    sys.exit(1)
+
+def wxpush(content):
+    sckey = os.getenv('CONFIG_SCKEY')
+    url = 'https://sc.ftqq.com/' + sckey + '.send'
+    data = {'text':'LeanCloud 唤醒失败！','desp':content}
+    requests.post(url,data)
